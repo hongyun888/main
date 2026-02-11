@@ -1,0 +1,9 @@
+/* Local Material Icons font to avoid CDN issues */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./MaterialIcons-Regular.woff2') format('woff2');
+  font-display: swap;
+}
+
