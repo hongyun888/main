@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8" />
+  <!-- 增加 viewport 以便移动端适配 -->
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://hongchuanai.com https://www.hongchuanai.com data: blob:; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' blob: data: https://hongchuanai.com https://www.hongchuanai.com; connect-src 'self' https://hongchuanai.com https://www.hongchuanai.com wss://www.hongchuanai.com wss: ws: blob: data:; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'none';"> -->
+  <!-- 允许媒体权限 -->
+  <meta http-equiv="Permissions-Policy" content="microphone=*, autoplay=*, geolocation=(), fullscreen=*">
+
+  <!-- 预连接语音服务，提升连接速度 -->
+  <link rel="preconnect" href="https://hongchuanai.com">
+  <link rel="preconnect" href="https://www.hongchuanai.com">
+  <title>欢迎使用数智人</title>
+  <!-- DNS预连接优化 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <!-- 异步加载字体，避免阻塞渲染 -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></noscript>
+  <!-- 本地备份的 Material Icons，避免外网阻挡 -->
+  <link rel="stylesheet" href="./assets/fonts/material-icons/material-icons.css">
+  <!-- Crypto-JS for MD5 calculation (lazy loaded) -->
+  <script defer src="/vendor/crypto-js/4.2.0/crypto-js.min.js" onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js'"></script>
+  <!-- Link to external CSS -->
+  <link href="./css/style.css" rel="stylesheet" />
+
+  <link rel="icon" href="./favicon.ico"/>
+</head>
+
+<body>
+  <!-- Removed: <audio id="cardSlideSound" src="slide-sound.mp3"></audio> -->
+  <div id="mainContainer">
+    <!-- 视频缓存池：4个视频元素确保无缝切换 -->
+    <video id="bgVideoA" class="bgVideo active" autoplay preload="auto" muted loop playsinline>
+      <source src="./assets/videos/video3.mp4" type="video/mp4" />
+      您的浏览器不支持 video 标签。
+    </video>
+    <video id="bgVideoB" class="bgVideo" autoplay preload="auto" muted loop playsinline>
+      <source src="./assets/videos/video3.mp4" type="video/mp4" />
+      您的浏览器不支持 video 标签。
+    </video>
+    <video id="bgVideoC" class="bgVideo" autoplay preload="auto" muted loop playsinline>
+      <source src="./assets/videos/video2.mp4" type="video/mp4" />
+      您的浏览器不支持 video 标签。
+    </video>
+    <video id="bgVideoD" class="bgVideo" autoplay preload="auto" muted loop playsinline>
+      <source src="./assets/videos/video2.mp4" type="video/mp4" />
+      您的浏览器不支持 video 标签。
+    </video>
+    <!-- 电视字幕条（语音/键盘统一显示答案） -->
+    <div id="subtitleBar" aria-live="polite" aria-atomic="true">
+      <div id="subtitleText"></div>
+    </div>
+    <!-- 🔥 浮动语音状态按钮（固定在界面右上角） -->
+    <button id="voiceStatusBtn" class="voice-status-button" title="点击开启语音模式">
+      <i class="material-icons">keyboard</i>
+    </button>
+    <!-- 知识库入口按钮（右上角） -->
+    <button class="knowledge-base-btn-inline knowledge-base-floating" id="knowledgeBaseBtn" title="知识库">
+      <span class="material-icons">book</span>
+    </button>
+    <div id="chatContainer">
+      <div id="inputPanel">
+        <div id="inputControls">
+          <button class="control-btn" id="toggleBtn">
+            <span class="material-icons" id="toggleIcon">keyboard</span>
+          </button>
+          <div id="inputTextContainer">
+            <textarea id="textInput" placeholder="请用键盘输入文本"></textarea>
+            <div id="inputConnector"></div>
+          </div>
+          <button id="sendBtn">发送</button>
+        </div>
+        <!-- 🔊 语音灵敏度调节器面板 -->
+        <div id="voiceSensitivityPanel" class="voice-sensitivity-panel" aria-label="语音灵敏度调节器">
+          <div class="voice-sensitivity-header">
+            <span class="voice-sensitivity-title">灵敏度调节器</span>
+            <span class="voice-sensitivity-badge" id="voiceSensitivityBadge">1档 · 仅近距离说话</span>
+          </div>
+          <div class="voice-sensitivity-body">
+            <input
+              id="voiceSensitivitySlider"
+              class="voice-sensitivity-slider"
+              type="range"
+              min="0"
+              max="6"
+              step="1"
+              value="3"
+              aria-label="语音灵敏度档位调节"
+            />
+          </div>
+        </div>
+        <!-- 声波显示区域 -->
+        <canvas height="60" id="soundWaveOverlay" width="1080"></canvas>
+      </div>
+    </div>
+    <!-- 知识库页面 -->
+    <div id="knowledgeBasePage">
+      <div style="position:absolute; top: 10px; right: 10px; z-index: 25;">
+        <button id="closeKnowledgeBaseBtn" style="background: none; border: none; font-size: 24px; cursor: pointer;">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      <div id="knowledgeBaseContainer">
+        <div id="knowledgeBaseLeft">
+          <button class="add-file-btn" id="addFileBtn">添加文件</button>
+          <div class="drop-zone" id="dropZone">拖拽文件到此区域</div>
+        </div>
+        <div id="knowledgeBaseRight">
+          <!-- 文件列表区域 -->
+        </div>
+      </div>
+    </div>
+    <!-- Removed Agent Selection Page -->
+  </div>
+
+  <script type="text/javascript">
+        let appCode;
+        let token;
+    const isLogin = () => {
+      const userStr = sessionStorage.getItem('userInfo')
+      try {
+        if (userStr) {
+          const user = JSON.parse(userStr)
+          const expire = new Date(user.tokenExpiredAt).getTime()
+          const current = new Date().getTime()
+          
+          // 总是写入token和appCode，不受时间限制
+          if (user.appCode && user.token) {
+            appCode = user.appCode
+            token = user.token
+            sessionStorage.setItem('token', token)
+            sessionStorage.setItem('appCode', appCode)
+          }
+          
+          if (current + 1000 * 60 * 60 < expire) {
+            return true
+          }
+        }
+      } catch (err) {
+        console.log(err)
+      }
+      window.open('./login.html', '_self')
+      sessionStorage.removeItem('userInfo')
+      return false
+    }
+
+    isLogin()
+  </script>
+
+  <!-- Link to external JavaScript -->
+  <script>
+    window.COSYVOICE_SOCKET_PATH = '/api-fl/socket.io';
+  </script>
+  <script src="/api-fl/socket.io/socket.io.js" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='/socket.io/socket.io.js';}"></script>
+  <script type="module" src="js/features/audioRecognition.js"></script>
+  <!-- 语音灵敏度调节器组件（依赖 audioRecognition 暴露的全局API） -->
+  <script type="text/javascript" src="js/features/voice-sensitivity.js"></script>
+  <script type="text/javascript" src="js/utils/util.js"></script>
+  <script type="text/javascript" src="js/features/omniModel.js"></script>
+  <script type="text/javascript" src="js/features/upload.js"></script>
+  <script defer src="js/app/script.js"></script>
+
+  <!-- 防护脚本已移至压缩产物中 -->
+</body>
+</html>
