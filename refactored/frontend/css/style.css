@@ -1,0 +1,2411 @@
+/* --- START OF style.css --- */
+/* ==========================================================================
+   Global Resets & Variables
+   ========================================================================== */
+:root{
+  /* Colors */
+  --color-primary: #4A90E2;         /* Main blue */
+  --color-primary-dark: #357ABD;    /* Darker blue for hover */
+  --color-accent: #FFA500;          /* Orange */
+  --color-accent-dark: #e09100;     /* Darker orange for hover */
+  --color-text-light: #fff;
+  --color-text-dark: #333;
+  --color-text-medium: #666;
+  --color-text-placeholder: #aaa;
+  --color-background-main: transparent;
+  --color-background-panel: rgba(255, 255, 255, 0.9);
+  --color-background-panel-blur: rgba(255, 255, 255, 0.7);
+  --color-border-light: #ccc;
+  --color-border-medium: #555;
+  --color-border-dark: #444;
+  --color-shadow-light: rgba(0, 0, 0, 0.08);
+  --color-shadow-medium: rgba(0, 0, 0, 0.12);
+  --color-shadow-strong: rgba(0, 0, 0, 0.4);
+  --color-scrollbar-thumb: rgba(74, 144, 226, 0.5);
+  --color-scrollbar-thumb-hover: rgba(74, 144, 226, 0.8);
+
+  /* Typography */
+  --font-family-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-serif-alt: "SimSun", serif;
+  --font-size-small: 14px;
+  --font-size-base: 16px;
+  --font-size-medium: 18px;
+  --font-size-large: 26px;
+  --font-size-xlarge: 32px;
+  --font-size-icon-small: 20px;
+  --font-size-icon-medium: 24px;
+  --font-size-icon-large: 32px;
+  --font-size-mic-icon: 42px;
+
+  /* Spacing & Sizing */
+  --spacing-unit: 8px;
+  --spacing-unit-half: 4px;
+  --radius-small: 4px;
+  --radius-medium: 8px;
+  --radius-large: 12px;
+  --radius-xlarge: 20px;
+  --radius-round: 50%;
+
+  /* Transitions */
+  --transition-short: 0.2s ease;
+  --transition-base: 0.25s ease;
+  --transition-long: 0.3s ease;
+
+  /* Z-Indexes */
+  --z-canvas-full: 3;
+  --z-chat-container: 4;
+  --z-input-panel: 5;
+  --z-sound-wave: 6;
+  --z-knowledge-base: 20;
+  --z-password-modal: 1001; /* Added for KB Password Modal */
+  --z-subtitle: 7;
+  --input-panel-height: 170px;
+  /* Removed --z-agent-selection and --z-agent-arrows */
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-background-main);
+  font-family: var(--font-family-sans);
+}
+
+/* ==========================================================================
+   Main Container & Background Elements
+   ========================================================================== */
+#mainContainer{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Chat Area
+   ========================================================================== */
+#chatContainer{
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 1080px;
+  height: 100%;
+  background: transparent;
+  z-index: var(--z-chat-container);
+}
+
+/* 电视字幕条 */
+#subtitleBar{
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--spacing-unit) * 2);
+  transform: translateX(-50%);
+  width: calc(100% - 160px);
+  max-width: 1600px;
+  padding: 14px 24px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 28px;
+  line-height: 1.35;
+  border-radius: 16px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  z-index: var(--z-subtitle);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+#subtitleBar.is-visible{
+  opacity: 1;
+}
+
+#subtitleText{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  word-break: break-word;
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (max-width: 1200px){
+  #subtitleBar{
+    width: calc(100% - 80px);
+    font-size: 24px;
+  }
+}
+
+
+/* 输入框文字优化 */
+textarea#textInput{
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* Quill编辑器内容优化 */
+.ql-editor{
+  line-height: 1.6 !important;
+  white-space: pre-wrap !important;
+}
+
+/* ==========================================================================
+   Input Panel
+   ========================================================================== */
+#inputPanel{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--input-panel-height);
+  background: var(--color-background-panel);
+  box-shadow: 0 -4px 16px var(--color-shadow-medium);
+  display: flex;
+  flex-direction: column;
+  padding: 0 calc(var(--spacing-unit) * 2.5);
+  box-sizing: border-box;
+  border-top-left-radius: var(--radius-xlarge);
+  border-top-right-radius: var(--radius-xlarge);
+  z-index: var(--z-input-panel);
+  backdrop-filter: blur(12px);
+}
+
+#inputControls{
+  display: flex;
+  align-items: center;
+  margin-bottom: calc(var(--spacing-unit) * 0.625);
+  padding: calc(var(--spacing-unit) * 1.5) 0;
+  gap: calc(var(--spacing-unit) * 1.5);
+}
+
+.control-btn, #sendBtn{
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-large);
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 2px var(--spacing-unit) rgba(74, 144, 226, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.control-btn{
+  width: 54px;
+  height: 54px;
+}
+.control-btn .material-icons, #sendBtn .material-icons{
+  font-size: var(--font-size-icon-medium);
+}
+
+#toggleIcon{
+  font-size: var(--font-size-mic-icon);
+  text-shadow: 0 0 var(--spacing-unit) rgba(0, 0, 0, 0.5);
+  color: var(--color-text-light);
+}
+
+@keyframes breathing{
+  0%{ transform: scale(1); color: var(--color-text-light); }
+  50%{ transform: scale(1.1); color: #e0e0e0; }
+  100%{ transform: scale(1); color: var(--color-text-light); }
+}
+.breathing{ animation: breathing 2s ease-in-out infinite; }
+
+#sendBtn{
+  padding: 0 calc(var(--spacing-unit) * 3);
+  height: 54px;
+  font-size: var(--font-size-large);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.control-btn:hover, #sendBtn:hover, .control-btn:focus, #sendBtn:focus{
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px calc(var(--spacing-unit) * 1.5) rgba(74, 144, 226, 0.4);
+  outline: none;
+}
+.control-btn:active, #sendBtn:active{
+  transform: translateY(1px);
+  box-shadow: 0 1px calc(var(--spacing-unit) * 0.5) rgba(74, 144, 226, 0.3);
+}
+
+/* Input Text & Attachments */
+#inputTextContainer{
+  flex: 1;
+  height: 60px;
+  border-radius: calc(var(--spacing-unit) * 2);
+  background: var(--color-text-light);
+  border: 1px solid var(--color-shadow-light);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8);
+  position: relative;
+  transition: all var(--transition-long);
+  overflow: hidden;
+}
+
+
+#textInput{
+  width: 100%;
+  height: 100%;
+  border: none;
+  font-size: var(--font-size-large);
+  line-height: 1.4;
+  padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 1.5) 60px;
+  background: transparent;
+  color: var(--color-text-dark);
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+  overflow-y: hidden;
+}
+#textInput::placeholder{
+  color: var(--color-text-placeholder);
+  opacity: 0.8;
+  font-style: italic;
+}
+
+#inputConnector{
+  position: absolute;
+  bottom: 0;
+  left: 2%;
+  right: 2%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), #6aa5e6, var(--color-primary));
+  border-radius: 3px;
+  transform: scaleX(0);
+  transition: transform var(--transition-long);
+  transform-origin: center;
+}
+#inputTextContainer:hover #inputConnector, #inputTextContainer:focus-within #inputConnector{
+  transform: scaleX(1);
+}
+
+.knowledge-base-btn-inline{ /* Kept this as knowledgeBaseBtn is still in index.html */
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.7;
+  margin-right: 0.8em;
+  display: inline-flex;
+  align-items: center;
+  transition: transform var(--transition-short), color var(--transition-short), opacity var(--transition-short);
+}
+.knowledge-base-btn-inline .material-icons{
+  color: var(--color-text-medium);
+  font-size: 36px;
+  line-height: 1;
+}
+
+.knowledge-base-btn-inline:hover, .knowledge-base-btn-inline:focus{
+  transform: scale(1.1);
+  opacity: 1;
+  outline: none;
+}
+
+.knowledge-base-btn-inline:hover .material-icons, .knowledge-base-btn-inline:focus .material-icons{ color: var(--color-primary); }
+
+/* 右上角知识库按钮定位 */
+#knowledgeBaseBtn.knowledge-base-floating{
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  margin-top: 76px;
+  margin-right: 0;
+  z-index: 1990;
+}
+
+@media (max-width: 768px){
+  #knowledgeBaseBtn.knowledge-base-floating{
+    top: 18px;
+    right: 18px;
+    margin-top: 64px;
+  }
+}
+
+@media (max-width: 480px){
+  #knowledgeBaseBtn.knowledge-base-floating{
+    top: 14px;
+    right: 14px;
+    margin-top: 58px;
+  }
+}
+
+/* Removed styles for .agent-btn-inline as the button was removed from index.html */
+
+
+/* Sound Wave Overlay */
+#soundWaveOverlay{
+  position: absolute;
+  left: 0;
+  bottom: var(--input-panel-height);
+  width: 100%;
+  height: 60px;
+  background: transparent;
+  z-index: var(--z-sound-wave);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Voice Sensitivity Panel - 语音灵敏度调节器
+   ========================================================================== */
+#voiceSensitivityPanel.voice-sensitivity-panel{
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  margin: 0 0 10px 0;
+  padding: 8px 12px;
+  width: min(520px, 100%);
+  min-width: 260px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: none; /* 去除彩色描边，仅保留阴影 */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  display: none; /* 默认隐藏，仅在语音模式下由 JS 显示 */
+  flex-direction: column;
+  gap: 6px;
+  color: #111827;
+  font-size: 13px;
+}
+
+.voice-sensitivity-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.voice-sensitivity-title{
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.voice-sensitivity-badge{
+  font-size: 12px;
+  color: #fbbf24;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.08);
+}
+
+.voice-sensitivity-body{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.voice-sensitivity-slider{
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22c55e, #facc15, #fb923c);
+  outline: none;
+}
+
+.voice-sensitivity-slider::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #f97316;
+  box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.35);
+  cursor: pointer;
+}
+
+.voice-sensitivity-slider::-moz-range-thumb{
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #f97316;
+  box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.35);
+  cursor: pointer;
+}
+
+@media (max-width: 960px){
+  #voiceSensitivityPanel.voice-sensitivity-panel{
+    min-width: auto;
+  }
+}
+
+/* ==========================================================================
+   Knowledge Base Page
+   ========================================================================== */
+#knowledgeBasePage{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: var(--z-knowledge-base);
+  display: none;
+  padding: var(--spacing-unit);
+  box-sizing: border-box;
+}
+
+.kb-header-controls{
+  position: absolute;
+  top: calc(var(--spacing-unit) * 1.25);
+  right: calc(var(--spacing-unit) * 1.25);
+  z-index: calc(var(--z-knowledge-base) + 1); /* Ensure controls are above container */
+}
+
+.icon-btn-clear{
+  background: none;
+  border: none;
+  font-size: var(--font-size-icon-medium);
+  cursor: pointer;
+  padding: var(--spacing-unit-half);
+  color: var(--color-text-medium);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-round);
+  transition: background-color var(--transition-short), color var(--transition-short);
+}
+.icon-btn-clear:hover, .icon-btn-clear:focus{
+  background-color: rgba(0,0,0,0.05);
+  color: var(--color-text-dark);
+  outline: none;
+}
+.icon-btn-clear .material-icons{
+  font-size: inherit;
+}
+
+
+#knowledgeBaseContainer{
+  display: flex;
+  height: calc(100% - (var(--spacing-unit) * 2));
+  width: calc(100% - (var(--spacing-unit) * 2));
+  margin: var(--spacing-unit) auto;
+  background: var(--color-text-light);
+  border-radius: var(--radius-medium);
+  box-shadow: 0 2px 10px var(--color-shadow-medium);
+  overflow: hidden;
+}
+
+#knowledgeBaseLeft{
+  width: 30%;
+  min-width: 250px;
+  border-right: 1px solid var(--color-border-light);
+  padding: calc(var(--spacing-unit) * 2.5);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+#knowledgeBaseRight{
+  flex: 1;
+  padding: calc(var(--spacing-unit) * 2.5);
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.add-file-btn{
+  display: inline-block;
+  padding: calc(var(--spacing-unit) * 1.25) calc(var(--spacing-unit) * 2.5);
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  margin-bottom: calc(var(--spacing-unit) * 2.5);
+  transition: background-color var(--transition-base);
+}
+.add-file-btn:hover, .add-file-btn:focus{
+  background-color: var(--color-primary-dark);
+  outline: none;
+}
+
+#dropZone{
+  border: 2px dashed var(--color-border-light);
+  border-radius: var(--radius-medium);
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-placeholder);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-base), background-color var(--transition-base);
+  flex-grow: 1;
+}
+#dropZone.dragover{
+  border-color: var(--color-primary);
+  background-color: rgba(74, 144, 226, 0.1);
+}
+
+.knowledge-file-item{
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-unit);
+  border-bottom: 1px solid #eee;
+}
+.knowledge-file-item:last-child{
+  border-bottom: none;
+}
+
+.knowledge-file-thumb{
+  width: 50px;
+  height: 50px;
+  margin-right: var(--spacing-unit);
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-small);
+  overflow: hidden;
+}
+.knowledge-file-thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.knowledge-file-thumb .material-icons{
+  font-size: var(--font-size-icon-medium);
+  color: var(--color-text-medium);
+}
+.knowledge-file-info{
+  flex-grow: 1;
+  overflow: hidden;
+}
+.knowledge-file-info div{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text-dark);
+}
+
+.delete-file-btn{
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+  padding: var(--spacing-unit-half);
+  color: var(--color-text-medium);
+  border-radius: var(--radius-round);
+  transition: background-color var(--transition-short), color var(--transition-short);
+}
+.delete-file-btn .material-icons{
+  font-size: calc(var(--font-size-icon-small) * 0.9);
+  color: red;
+  display: block;
+}
+.delete-file-btn:hover, .delete-file-btn:focus{
+  background-color: rgba(255,0,0,0.1);
+  outline: none;
+}
+.delete-file-btn:hover .material-icons, .delete-file-btn:focus .material-icons{
+  color: darkred;
+}
+
+.upload-to-btn{
+  display: block;
+  width: 100%;
+  padding: calc(var(--spacing-unit) * 1.25) calc(var(--spacing-unit) * 2.5);
+  background: var(--color-accent);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  margin-top: calc(var(--spacing-unit) * 2.5);
+  text-align: center;
+  transition: background-color var(--transition-base);
+}
+.upload-to-btn:hover, .upload-to-btn:focus{
+  background: var(--color-accent-dark);
+  outline: none;
+}
+
+/* 移除知识库页的“返回首页”按钮相关样式（由主界面按钮替代） */
+.upload-status{
+  margin-top: var(--spacing-unit);
+  font-size: var(--font-size-small);
+  color: var(--color-primary);
+  text-align: center;
+  height: calc(var(--font-size-small) + 4px);
+}
+
+/* ==========================================================================
+   Knowledge Base Password Modal
+   ========================================================================== */
+.kb-password-modal{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: calc(var(--spacing-unit) * 3.75); /* 30px */
+  background: var(--color-text-light);
+  border: 1px solid var(--color-border-light);
+  box-shadow: 0 calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 1.875) var(--color-shadow-medium); /* 0 4px 15px */
+  border-radius: var(--radius-medium);
+  z-index: var(--z-password-modal);
+  display: none; /* Initially hidden, JS toggles to flex */
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing-unit) * 1.875); /* 15px */
+  font-family: var(--font-family-sans);
+  min-width: 300px;
+  box-sizing: border-box;
+}
+
+.kb-password-title{
+  margin: 0 0 var(--spacing-unit) 0;
+  color: var(--color-text-dark);
+  font-size: var(--font-size-medium);
+  font-weight: bold;
+  text-align: center;
+}
+
+.kb-password-input{
+  padding: var(--spacing-unit);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-small);
+  width: 100%; 
+  max-width: 250px;
+  font-size: var(--font-size-base);
+  box-sizing: border-box;
+}
+.kb-password-input:focus{
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+
+.kb-password-error{
+  color: red;
+  font-size: var(--font-size-small);
+  margin: var(--spacing-unit-half) 0 0 0;
+  height: 1.2em; /* Reserve space */
+  text-align: center;
+  width: 100%;
+}
+
+.kb-password-button-container{
+  display: flex;
+  gap: var(--spacing-unit);
+  margin-top: var(--spacing-unit);
+  width: 100%;
+  justify-content: center;
+}
+
+.kb-password-submit-btn, .kb-password-cancel-btn{
+  padding: var(--spacing-unit) calc(var(--spacing-unit) * 2.5); /* 10px 20px */
+  border: none;
+  border-radius: var(--radius-small);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  transition: background-color var(--transition-short);
+  flex-grow: 1;
+  max-width: 120px;
+}
+
+.kb-password-submit-btn{
+  background: var(--color-primary);
+  color: var(--color-text-light);
+}
+.kb-password-submit-btn:hover, .kb-password-submit-btn:focus{
+  background: var(--color-primary-dark);
+  outline: none;
+}
+
+.kb-password-cancel-btn{
+  background: var(--color-border-light);
+  color: var(--color-text-dark);
+}
+.kb-password-cancel-btn:hover, .kb-password-cancel-btn:focus{
+  background: #bbb; /* Slightly darker grey */
+  outline: none;
+}
+
+
+/* Removed Agent Selection Page Styles */
+
+/* ========================================================================== 
+   Background Video System with Advanced Hardware Acceleration
+   ========================================================================== */
+.bgVideo{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+  z-index: -1;
+  opacity: 0;
+  
+  /* 核心GPU硬件加速优化 */
+  transform: translateZ(0) scale3d(1, 1, 1);
+  transform-style: preserve-3d;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  
+  /* 确保独立合成层 */
+  isolation: isolate;
+  contain: layout style paint;
+  
+  /* 视频渲染优化 */
+  image-rendering: optimizeSpeed;
+  image-rendering: -webkit-optimize-contrast;
+  filter: brightness(1) contrast(1);
+  
+  /* 超快速无缝过渡 */
+  transition: opacity 15ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.bgVideo.active{
+  opacity: 1;
+}
+
+.bgVideo.preparing{
+  /* 预备状态：微透明保持解码活跃 */
+  opacity: 0.001;
+}
+
+.bgVideo.fadeOut{
+  /* 快速淡出 */
+  opacity: 0;
+  transition: opacity 10ms linear;
+}
+
+/* ========== 界面防复制 & 防拖拽（不影响输入框） ========== */
+body, #mainContainer{
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* 允许输入区域正常复制 */
+textarea, input, .ql-editor{ 
+  user-select: text !important; 
+  -webkit-user-select: text !important;
+}
+
+/* 确保图标和按钮正常显示和交互 */
+.material-icons{
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-user-drag: none !important;
+  pointer-events: auto !important;
+  display: inline-block !important;
+  font-family: 'Material Icons', 'Material Icons Outlined', 'Material Symbols Outlined', sans-serif !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  line-height: 1 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-feature-settings: 'liga' !important;
+}
+
+/* 确保所有按钮元素正常交互 */
+button, .control-btn, .icon-btn-clear, .add-file-btn, .upload-to-btn, .delete-file-btn, .knowledge-base-btn-inline, .kb-password-submit-btn, .kb-password-cancel-btn, #sendBtn, #toggleBtn, #closeKnowledgeBaseBtn, #addFileBtn{
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-user-drag: none !important;
+  pointer-events: auto !important;
+}
+
+/* ===== 富文本消息样式 ===== */
+/* 第二阶段：全面的富文本支持 */
+/* 第三阶段：用户体验改进 */
+/* 第四阶段：用户体验精细化调整 */
+
+/* 富文本容器样式 */
+.rich-text-content{
+    /* 基础样式保持不变 */
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    
+    /* 第四阶段：精细化过渡效果 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    transform: translateY(0);
+    opacity: 1;
+    
+    /* 微妙的阴影效果 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* 第四阶段：内容加载动画 */
+.rich-text-content.loading{
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rich-text-content.loaded{
+    opacity: 1;
+    transform: translateY(0);
+    animation: contentFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes contentFadeIn{
+    0%{
+        opacity: 0;
+        transform: translateY(15px) scale(0.98);
+    }
+    50%{
+        opacity: 0.7;
+        transform: translateY(5px) scale(0.99);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 第四阶段：交互状态改进 */
+.rich-text-content:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 加载状态样式 */
+.rich-text-loading{
+    opacity: 0.7;
+    position: relative;
+    pointer-events: none;
+    
+    /* 第四阶段：改进的加载动画 */
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse{
+    0%, 100%{
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50%{
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
+}
+
+.rich-text-loading::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255,255,255,0.4), 
+        transparent
+    );
+    animation: shimmer 2s ease-in-out infinite;
+    z-index: 1;
+    border-radius: 4px;
+}
+
+@keyframes shimmer{
+    0%{ 
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50%{
+        opacity: 1;
+    }
+    100%{ 
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* 第四阶段：改进的加载指示器 */
+.rich-text-spinner{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+    
+    /* 第四阶段：3D效果 */
+    transform-style: preserve-3d;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes spin{
+    0%{ 
+        transform: rotate(0deg) scale(1);
+    }
+    50%{
+        transform: rotate(180deg) scale(1.05);
+    }
+    100%{ 
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+/* 第四阶段：改进的错误状态 */
+.rich-text-error{
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 6px 0;
+    color: #856404;
+    font-size: 14px;
+    position: relative;
+    
+    /* 第四阶段：错误动画 */
+    animation: errorSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(255, 234, 167, 0.3);
+}
+
+@keyframes errorSlideIn{
+    0%{
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.rich-text-error::before{
+    content: '⚠️';
+    margin-right: 10px;
+    font-size: 16px;
+    animation: errorIconBounce 0.6s ease-out 0.2s;
+}
+
+@keyframes errorIconBounce{
+    0%, 20%, 50%, 80%, 100%{
+        transform: translateY(0);
+    }
+    40%{
+        transform: translateY(-5px);
+    }
+    60%{
+        transform: translateY(-3px);
+    }
+}
+
+.rich-text-error-message{
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #6c757d;
+    opacity: 0;
+    animation: fadeInDelay 0.3s ease-out 0.4s forwards;
+}
+
+@keyframes fadeInDelay{
+    from{ opacity: 0; transform: translateY(5px); }
+    to{ opacity: 1; transform: translateY(0); }
+}
+
+/* 第四阶段：改进的重试按钮 */
+.rich-text-retry-btn{
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 第四阶段：按钮效果 */
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    transform: translateY(0);
+    position: relative;
+    overflow: hidden;
+}
+
+.rich-text-retry-btn:hover{
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+}
+
+.rich-text-retry-btn:active{
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+/* 第四阶段：按钮点击波纹效果 */
+.rich-text-retry-btn::before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.rich-text-retry-btn:active::before{
+    width: 100px;
+    height: 100px;
+}
+
+/* 第四阶段：成功状态动画 */
+.rich-text-success{
+    opacity: 1;
+    animation: successFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes successFadeIn{
+    0%{
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+    50%{
+        opacity: 0.8;
+        transform: translateY(-5px) scale(1.02);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 第四阶段：富文本内容渐入动画改进 */
+.rich-text-content.fade-in{
+    animation: fadeInEnhanced 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInEnhanced{
+    0%{ 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95);
+        filter: blur(2px);
+    }
+    50%{
+        opacity: 0.7;
+        transform: translateY(-2px) scale(1.01);
+        filter: blur(1px);
+    }
+    100%{ 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* 基础格式样式 */
+.rich-text-content strong{
+    font-weight: bold;
+    color: #2c3e50;
+    
+    /* 第四阶段：文本强调效果 */
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.rich-text-content strong:hover{
+    color: #1a252f;
+    text-shadow: 0 1px 2px rgba(44, 62, 80, 0.1);
+}
+
+.rich-text-content em{
+    font-style: italic;
+    color: #34495e;
+    
+    /* 第四阶段：斜体效果 */
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.rich-text-content em:hover{
+    color: #2c3e50;
+    transform: skew(-2deg);
+}
+
+.rich-text-content del{
+    text-decoration: line-through;
+    color: #95a5a6;
+    
+    /* 第四阶段：删除线动画 */
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.rich-text-content del:hover{
+    color: #7f8c8d;
+    opacity: 0.8;
+}
+
+.rich-text-content u{
+    text-decoration: underline;
+    color: #3498db;
+    
+    /* 第四阶段：下划线效果 */
+    text-decoration-style: solid;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: all 0.2s ease;
+}
+
+.rich-text-content u:hover{
+    color: #2980b9;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+/* 第四阶段：改进的行内代码样式 */
+.rich-text-content code{
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+    color: #e74c3c;
+    
+    /* 第四阶段：代码块效果 */
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.rich-text-content code:hover{
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-color: #c82333;
+}
+
+/* 第四阶段：改进的代码块样式 */
+.rich-text-content pre{
+    background: linear-gradient(135deg, #2f3542, #1e2329);
+    color: #f1f2f6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid #57606f;
+    
+    /* 第四阶段：代码块动画效果 */
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: codeBlockSlideIn 0.6s ease-out;
+}
+
+@keyframes codeBlockSlideIn{
+    0%{
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.rich-text-content pre:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.rich-text-content pre code{
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+    box-shadow: none;
+}
+
+/* 第四阶段：改进的代码块语言标签 */
+.rich-text-content pre::before{
+    content: attr(data-language);
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 11px;
+    color: #a4b0be;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
+    /* 第四阶段：语言标签效果 */
+    background: rgba(164, 176, 190, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.rich-text-content pre:hover::before{
+    opacity: 1;
+}
+
+/* 第四阶段：改进的代码块复制按钮 */
+.rich-text-content pre:hover .copy-code-btn{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.copy-code-btn{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #57606f, #40495a);
+    color: #f1f2f6;
+    border: none;
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 第四阶段：按钮效果 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.copy-code-btn:hover{
+    background: linear-gradient(135deg, #3742fa, #2f3ceb);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(55, 66, 250, 0.3);
+}
+
+.copy-code-btn:active{
+    transform: translateY(0);
+}
+
+/* 第四阶段：复制成功动画 */
+.copy-code-btn.success{
+    background: linear-gradient(135deg, #28a745, #20c997);
+    animation: copySuccess 0.4s ease-out;
+}
+
+@keyframes copySuccess{
+    0%{ transform: scale(1); }
+    50%{ transform: scale(1.1); }
+    100%{ transform: scale(1); }
+}
+
+/* 第四阶段：改进的链接样式 */
+.rich-text-content a{
+    color: #3498db;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 第四阶段：链接下划线效果 */
+    background: linear-gradient(to right, #3498db, #3498db);
+    background-size: 0% 2px;
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+}
+
+.rich-text-content a:hover{
+    color: #2980b9;
+    background-size: 100% 2px;
+    transform: translateY(-1px);
+}
+
+.rich-text-content a:visited{
+    color: #9b59b6;
+}
+
+/* 第四阶段：链接点击效果 */
+.rich-text-content a:active{
+    transform: translateY(0);
+}
+
+/* 第四阶段：改进的引用块样式 */
+.rich-text-content blockquote{
+    border-left: 4px solid #3498db;
+    margin: 20px 0;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #2c3e50;
+    position: relative;
+    
+    /* 第四阶段：引用块动画 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: quoteSlideIn 0.6s ease-out;
+}
+
+@keyframes quoteSlideIn{
+    0%{
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.rich-text-content blockquote:hover{
+    transform: translateX(5px);
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.2);
+}
+
+.rich-text-content blockquote::before{
+    content: '"';
+    font-size: 60px;
+    color: #bdc3c7;
+    position: absolute;
+    left: 16px;
+    top: -15px;
+    font-family: serif;
+    opacity: 0.3;
+    
+    /* 第四阶段：引号动画 */
+    animation: quoteFloat 3s ease-in-out infinite;
+}
+
+@keyframes quoteFloat{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(-3px); }
+}
+
+.rich-text-content blockquote p{
+    margin: 0;
+    padding-left: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+/* 第四阶段：改进的列表样式 */
+.rich-text-content ul{
+    list-style-type: none;
+    padding-left: 0;
+    margin: 16px 0;
+}
+
+.rich-text-content ul li{
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+    
+    /* 第四阶段：列表项动画 */
+    opacity: 0;
+    animation: listItemSlideIn 0.4s ease-out forwards;
+}
+
+.rich-text-content ul li:nth-child(1){ animation-delay: 0.1s; }
+.rich-text-content ul li:nth-child(2){ animation-delay: 0.2s; }
+.rich-text-content ul li:nth-child(3){ animation-delay: 0.3s; }
+.rich-text-content ul li:nth-child(4){ animation-delay: 0.4s; }
+.rich-text-content ul li:nth-child(5){ animation-delay: 0.5s; }
+
+@keyframes listItemSlideIn{
+    0%{
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.rich-text-content ul li::before{
+    content: '•';
+    color: #3498db;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    font-size: 18px;
+    
+    /* 第四阶段：列表项目符号动画 */
+    transition: all 0.3s ease;
+    transform: scale(1);
+}
+
+.rich-text-content ul li:hover::before{
+    color: #2980b9;
+    transform: scale(1.2);
+}
+
+.rich-text-content ol{
+    padding-left: 28px;
+    margin: 16px 0;
+}
+
+.rich-text-content ol li{
+    margin-bottom: 10px;
+    line-height: 1.6;
+    
+    /* 第四阶段：有序列表动画 */
+    opacity: 0;
+    animation: listItemSlideIn 0.4s ease-out forwards;
+}
+
+.rich-text-content ol li:nth-child(1){ animation-delay: 0.1s; }
+.rich-text-content ol li:nth-child(2){ animation-delay: 0.2s; }
+.rich-text-content ol li:nth-child(3){ animation-delay: 0.3s; }
+.rich-text-content ol li:nth-child(4){ animation-delay: 0.4s; }
+.rich-text-content ol li:nth-child(5){ animation-delay: 0.5s; }
+
+.rich-text-content ol li::marker{
+    color: #3498db;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.rich-text-content ol li:hover::marker{
+    color: #2980b9;
+}
+
+/* 第四阶段：改进的表格样式 */
+.rich-text-content table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    
+    /* 第四阶段：表格动画 */
+    animation: tableSlideIn 0.6s ease-out;
+}
+
+@keyframes tableSlideIn{
+    0%{
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rich-text-content table th{
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    font-weight: bold;
+    padding: 16px;
+    text-align: left;
+    border: none;
+    position: relative;
+    
+    /* 第四阶段：表头效果 */
+    transition: all 0.3s ease;
+}
+
+.rich-text-content table th:hover{
+    background: linear-gradient(135deg, #2980b9, #1f6391);
+}
+
+.rich-text-content table td{
+    padding: 16px;
+    border-bottom: 1px solid #ecf0f1;
+    background-color: white;
+    
+    /* 第四阶段：表格单元格动画 */
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.rich-text-content table tr:nth-child(even) td{
+    background-color: #f8f9fa;
+}
+
+.rich-text-content table tr:hover td{
+    background-color: #e3f2fd;
+    transform: scale(1.01);
+}
+
+/* 第四阶段：改进的图片样式 */
+.rich-text-content img{
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 12px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 第四阶段：图片加载动画 */
+    opacity: 0;
+    animation: imageSlideIn 0.6s ease-out forwards;
+}
+
+@keyframes imageSlideIn{
+    0%{
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.rich-text-content img:hover{
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* 第四阶段：图片点击效果 */
+.rich-text-content img:active{
+    transform: translateY(0) scale(1.01);
+}
+
+/* 第四阶段：延迟加载图片样式改进 */
+.rich-text-content img[loading="lazy"]{
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.rich-text-content img.lazy-loaded{
+    opacity: 1;
+    animation: imageSlideIn 0.6s ease-out;
+}
+
+/* 第四阶段：改进的图片加载占位符 */
+.rich-text-content img.loading{
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loadingGradient 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingGradient{
+    0%{ background-position: 200% 0; }
+    100%{ background-position: -200% 0; }
+}
+
+/* 第四阶段：段落样式改进 */
+.rich-text-content p{
+    margin: 12px 0;
+    line-height: 1.6;
+    color: #2c3e50;
+    
+    /* 第四阶段：段落动画 */
+    opacity: 0;
+    animation: paragraphFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes paragraphFadeIn{
+    0%{
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rich-text-content p:first-child{
+    margin-top: 0;
+}
+
+.rich-text-content p:last-child{
+    margin-bottom: 0;
+}
+
+/* 第四阶段：响应式设计改进 */
+@media screen and (max-width: 768px){
+    .rich-text-content{
+        font-size: 14px;
+        /* 第四阶段：移动端动画优化 */
+        animation-duration: 0.3s;
+    }
+    
+    .rich-text-content pre{
+        font-size: 12px;
+        padding: 16px;
+        /* 第四阶段：移动端代码块优化 */
+        border-radius: 6px;
+    }
+    
+    .rich-text-content table{
+        font-size: 12px;
+    }
+    
+    .rich-text-content table th, .rich-text-content table td{
+        padding: 10px;
+    }
+    
+    .rich-text-content blockquote{
+        padding: 12px 16px;
+        margin: 16px 0;
+    }
+    
+    /* 第四阶段：移动端触摸优化 */
+    .rich-text-content a{
+        padding: 4px 2px;
+        margin: -4px -2px;
+        min-height: 44px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+
+/* 第四阶段：暗色主题改进 */
+@media (prefers-color-scheme: dark){
+    .rich-text-content{
+        color: #e8e8e8;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .rich-text-content strong{
+        color: #ffffff;
+    }
+    
+    .rich-text-content code{
+        background: linear-gradient(135deg, #2f3542, #1e2329);
+        border-color: #57606f;
+        color: #ff6b6b;
+    }
+    
+    .rich-text-content blockquote{
+        background: linear-gradient(135deg, #2f3542, #1e2329);
+        color: #e8e8e8;
+    }
+    
+    .rich-text-content table th{
+        background: linear-gradient(135deg, #2f3542, #1e2329);
+    }
+    
+    .rich-text-content table td{
+        background-color: #2f3542;
+        border-color: #57606f;
+    }
+    
+    .rich-text-content table tr:nth-child(even) td{
+        background-color: #3d4454;
+    }
+    
+    .rich-text-content table tr:hover td{
+        background-color: #4a5568;
+    }
+}
+
+/* 第四阶段：高对比度模式改进 */
+@media (prefers-contrast: high){
+    .rich-text-content{
+        color: #000000;
+        text-shadow: none;
+    }
+    
+    .rich-text-content a{
+        color: #0000ff;
+        text-decoration: underline;
+        background: none;
+    }
+    
+    .rich-text-content code{
+        background: #ffffff;
+        border: 2px solid #000000;
+        color: #000000;
+    }
+    
+    .rich-text-content blockquote{
+        border-left-color: #000000;
+        background: #ffffff;
+        color: #000000;
+    }
+    
+    .rich-text-content table th{
+        background: #000000;
+        color: #ffffff;
+    }
+    
+    .rich-text-content table td{
+        background: #ffffff;
+        border: 1px solid #000000;
+        color: #000000;
+    }
+}
+
+/* 第四阶段：动画减少设置改进 */
+@media (prefers-reduced-motion: reduce){
+    .rich-text-content, .rich-text-content *, .rich-text-loading, .rich-text-spinner, .copy-code-btn, .rich-text-retry-btn{
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .rich-text-content:hover, .rich-text-content img:hover, .rich-text-content a:hover, .rich-text-content blockquote:hover{
+        transform: none !important;
+    }
+}
+
+/* 第四阶段：打印样式优化 */
+@media print{
+    .rich-text-content{
+        font-size: 12pt;
+        line-height: 1.4;
+        color: #000000;
+        /* 第四阶段：打印时移除动画 */
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    .rich-text-content a{
+        color: #000000;
+        text-decoration: underline;
+        background: none;
+    }
+    
+    .rich-text-content pre{
+        background: #f8f9fa;
+        color: #000000;
+        border: 1px solid #000000;
+        box-shadow: none;
+    }
+    
+    .rich-text-content blockquote{
+        border-left-color: #000000;
+        background: #f8f9fa;
+        color: #000000;
+        box-shadow: none;
+    }
+    
+    .rich-text-content table{
+        box-shadow: none;
+    }
+    
+    .rich-text-content img{
+        box-shadow: none;
+    }
+    
+    .rich-text-error, .rich-text-loading, .rich-text-spinner, .rich-text-retry-btn, .copy-code-btn{
+        display: none !important;
+    }
+}
+
+/* 第四阶段：焦点管理改进 */
+.rich-text-content a:focus, .rich-text-retry-btn:focus, .copy-code-btn:focus{
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    border-radius: 4px;
+    
+    /* 第四阶段：焦点动画 */
+    animation: focusGlow 0.3s ease-out;
+}
+
+@keyframes focusGlow{
+    0%{ box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7); }
+    100%{ box-shadow: 0 0 0 4px rgba(0, 123, 255, 0); }
+}
+
+/* 第四阶段：选择文本样式改进 */
+.rich-text-content ::selection{
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    text-shadow: none;
+}
+
+.rich-text-content ::-moz-selection{
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    text-shadow: none;
+}
+
+/* 第四阶段：工具提示样式改进 */
+.rich-text-tooltip{
+    position: relative;
+    display: inline-block;
+}
+
+.rich-text-tooltip .tooltip-text{
+    visibility: hidden;
+    width: 220px;
+    background: linear-gradient(135deg, #2f3542, #1e2329);
+    color: #ffffff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -110px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 12px;
+    line-height: 1.4;
+    
+    /* 第四阶段：工具提示效果 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.rich-text-tooltip .tooltip-text::after{
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2f3542 transparent transparent transparent;
+}
+
+.rich-text-tooltip:hover .tooltip-text{
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(-5px);
+}
+
+/* 第四阶段：性能优化指示器改进 */
+.rich-text-performance-indicator{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: monospace;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 第四阶段：指示器效果 */
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rich-text-performance-indicator.show{
+    opacity: 1;
+    transform: translateY(0);
+    animation: indicatorSlideIn 0.4s ease-out;
+}
+
+@keyframes indicatorSlideIn{
+    0%{
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100%{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rich-text-performance-indicator.slow{
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.rich-text-performance-indicator.very-slow{
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    animation: indicatorPulse 1s ease-in-out infinite;
+}
+
+@keyframes indicatorPulse{
+    0%, 100%{ transform: scale(1); }
+    50%{ transform: scale(1.05); }
+}
+
+/* 第四阶段：滚动条样式（WebKit内核浏览器） */
+.rich-text-content::-webkit-scrollbar{
+    width: 8px;
+    height: 8px;
+}
+
+.rich-text-content::-webkit-scrollbar-track{
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.rich-text-content::-webkit-scrollbar-thumb{
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-radius: 4px;
+}
+
+.rich-text-content::-webkit-scrollbar-thumb:hover{
+    background: linear-gradient(135deg, #2980b9, #1f6391);
+}
+
+/* 第四阶段：自定义属性（CSS变量）支持 */
+:root{
+    --rich-text-primary-color: #3498db;
+    --rich-text-primary-hover: #2980b9;
+    --rich-text-success-color: #28a745;
+    --rich-text-warning-color: #ffc107;
+    --rich-text-error-color: #dc3545;
+    --rich-text-animation-duration: 0.3s;
+    --rich-text-animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 第四阶段：主题切换支持 */
+[data-theme="dark"] .rich-text-content{
+    --rich-text-primary-color: #64b5f6;
+    --rich-text-primary-hover: #42a5f5;
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+[data-theme="high-contrast"] .rich-text-content{
+    --rich-text-primary-color: #0000ff;
+    --rich-text-primary-hover: #0000cc;
+    background: #ffffff;
+    color: #000000;
+}
+
+/* 思维导图列表弹层 */
+.mm-question-overlay.hidden{ display: none; }
+.mm-question-overlay{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px 28px;
+  background: none;
+  z-index: 1000;
+  pointer-events: none;
+  overflow-y: auto;
+}
+.mm-question-container{
+  width: 100%;
+  max-width: 864px;
+  margin: 0 auto;
+  pointer-events: auto;
+  position: relative;
+  padding-left: 120px;
+  padding-right: 120px;
+}
+.mm-question-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 23px;
+}
+.mm-question-empty{
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #d6d9e4;
+  padding: 28px;
+  border: 1px dashed rgba(255,255,255,0.3);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.05);
+}
+
+@media (max-width: 768px){
+  .mm-question-grid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+  }
+}
+
+@media (max-width: 480px){
+  .mm-question-grid{
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 确保chatContainer具有相对定位，作为绝对定位的基准 */
+#chatContainer{
+    position: relative;
+}
+
+/* 旧样式已删除，使用新的 .voice-status-button 样式 */
+
+/* ==========================================================================
+   🔥 浮动语音状态按钮样式 - Step 1 补充
+   ========================================================================== */
+
+/* 浮动语音状态按钮 */
+.voice-status-button{
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    /* 🔥 修改：添加线性渐变透明度 */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.3) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Safari支持 */
+    border: 2px solid #ff8c00; /* 默认橙色 */
+    color: #ff8c00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    will-change: transform, opacity;
+    transform: translateZ(0); /* GPU加速 */
+    outline: none;
+    font-size: 32px;
+}
+
+/* 三种状态颜色 */
+.voice-status-button[data-state="voice_off"]{
+    background-color: #ff8c00;
+    border-color: #ff8c00;
+    color: #ffffff;
+}
+
+.voice-status-button[data-state="voice_on"]{
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #ffffff;
+}
+
+/* 🔥 新增：TTS准备中状态 */
+.voice-status-button[data-state="tts_preparing"]{
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.voice-status-button[data-state="tts_playing"]{
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #ffffff;
+}
+
+/* TTS播报时的脉冲动画 */
+.voice-status-button.pulse-animation{
+    animation: voiceStatusPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes voiceStatusPulse{
+    0%, 100%{ 
+        transform: scale(1); 
+        opacity: 0.9; 
+    }
+    50%{ 
+        transform: scale(1.05); 
+        opacity: 1; 
+        box-shadow: 0 0 20px rgba(220, 53, 69, 0.5);
+    }
+}
+
+/* 悬停效果 */
+.voice-status-button:hover{
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 点击反馈 */
+.voice-status-button:active{
+    transform: translateY(0) scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* 焦点状态 */
+.voice-status-button:focus{
+    outline: 2px solid rgba(0, 123, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* 禁用状态 */
+.voice-status-button:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* 响应式调整 */
+@media (max-width: 768px){
+    .voice-status-button{
+        top: 18px;
+        right: 18px;
+        width: 58px;
+        height: 58px;
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 480px){
+    .voice-status-button{
+        top: 14px;
+        right: 14px;
+        width: 52px;
+        height: 52px;
+        font-size: 28px;
+    }
+}
+
+/* 确保inputControls具有相对定位 */
+#inputControls{
+  position: relative;
+}
+
+/* 隐藏输入框（保留布局与逻辑，避免影响功能） */
+#inputPanel{
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* --- END OF style.css --- */
